@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <RepositorySearchResultList></RepositorySearchResultList>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import RepositorySearchResultList from './components/RepositorySearchResultList.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    RepositorySearchResultList
   }
 }
 </script>
