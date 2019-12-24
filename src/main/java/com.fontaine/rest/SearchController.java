@@ -14,6 +14,8 @@ import java.util.Map;
  * Created by Fazel on 12/22/2019.
  */
 
+
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200", "http://localhost:8081" })
 @RestController
 @RequestMapping("/search")
 public class SearchController {
