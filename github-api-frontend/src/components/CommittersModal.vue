@@ -2,7 +2,7 @@
     <b-modal id="committers" size="xl" title="List of Committers">
         <div class="wrapper">
             <b-table striped hover :items="committersData">
-                </b-table>
+            </b-table>
         </div>
     </b-modal>
 </template>
@@ -11,23 +11,8 @@
 
     export default {
         name: 'CommittersModal',
-props: {
-    committersData: Array
-},
-        data: function () {
-            return {
-                item: ''
-            }
-        },
-
-        computed: {
-            itemToShow: function () {
-                return this.committers
-            }
-        },
-
-        methods: {
-
-    }
+        props: {
+            committersData: Array
+        }
     }
 </script>

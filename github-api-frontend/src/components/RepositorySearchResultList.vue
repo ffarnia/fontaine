@@ -16,31 +16,25 @@
         </div>
         <div>
             <CommittersModal :committersData="committersData"/>
+            <CommitNubmersModal :commitNumbers="commitNumbers"  :commitOptions="commitOptions" :pieData="pieData"/>
+            <CommitTimelineModal  :timelineData="timelineData"/>
+
             <b-table striped hover :items="repositories" :fields="fields" caption-top>
                 <template v-slot:table-caption>Total count of search result: {{total_repo}}</template>
 
                 <template v-slot:cell(show_details)="row">
-                    <b-form-checkbox v-model="row.detailsShowing" @change="row.toggleDetails">
-                        Details via check
-                    </b-form-checkbox>
-
                     <b-button @click="onClick(row.item.contributors_url)">
                         Committers
                     </b-button>
+                        <b-button @click="getCommitNumbers(row.item.commits_url)">
+                            Commit Numbers
+                        </b-button>
+                    <b-button @click="commitTimeline(row.item.commits_url)">
+                        Timeline
+                    </b-button>
+
                 </template>
 
-                <template v-slot:row-details="row">
-                    <b-card>
-                        <b-row class="mb-2">
-                            <b-col sm="3" class="text-sm-right"><b>List of committers:</b></b-col>
-                        </b-row>
-
-                        <b-row class="mb-2">
-                            <b-col sm="3" class="text-sm-right"><b>Is Active:</b></b-col>
-                        </b-row>
-
-                    </b-card>
-                </template>
             </b-table>
         </div>
     </div>
@@ -49,11 +43,15 @@
 <script>
     import RepositorySearchService from '../service/RepositorySearchService.js';
     import CommittersModal from './CommittersModal.vue';
+    import CommitNubmersModal from './CommitNubmersModal.vue';
+    import CommitTimelineModal from './CommitTimelineModal.vue';
 
     export default {
         name: 'RepositoriesList',
         components: {
-            CommittersModal: CommittersModal
+            CommittersModal: CommittersModal,
+            CommitNubmersModal: CommitNubmersModal,
+            CommitTimelineModal: CommitTimelineModal
         },
         data()
     {
@@ -62,36 +60,73 @@
             total_repo: 0,
             search: {text:""},
             fields: ['id','full_name','description','show_details'],
-            committersData: []
+            committersData: [],
+            commitNumbers:[],
+            commitOptions:[],
+            pieData: [],
+            timelineData: [{tag:'',content:''}]
         }
     }
     ,
     methods:{
         searchRepo()
         {
-            RepositorySearchService.searchRepository(this.search.text).then(response =>
+
+            RepositorySearchService.searchRepository(this.search.text).then(response=>
             {
-//                console.log(response.data);
                 this.repositories = response.data.items;
                 this.total_repo = response.data.total_count;
             }
         )
             ;
-        },
-        onClick(url) {
-            RepositorySearchService.committersList(url).then(response =>
+        }
+    ,
+        onClick(url)
+        {
+            RepositorySearchService.committersList(url).then(response=>
             {
-//                console.log(response.data);
                 this.committersData = response.data;
-            });
+            }
+        )
+            ;
             this.$bvModal.show('committers');
+        },
+
+        getCommitNumbers(url)
+        {
+            RepositorySearchService.numberOfCommits(url.replace("{/sha}","")).then(response=>
+            {
+                var map = new Map();
+                map = response.data;
+                Object.keys(map).map( k => {
+                let pair={};
+                pair.name = k;
+                pair.value = map[k];
+                this.pieData.push(pair);
+            });
+            }
+        )
+            ;
+            this.$bvModal.show('commit-numbers');
+        },
+        commitTimeline(url)
+        {
+            RepositorySearchService.commitTimeline(url.replace("{/sha}","")).then(response=>
+            {
+                let commitList = response.data;
+                commitList.forEach(e => {
+                let timeObj = {};
+                timeObj.tag = new Date(e.date).toLocaleString();
+                timeObj.content = e.email;
+                this.timelineData.push(timeObj);
+            });
+
+            }
+        )
+            ;
+            this.$bvModal.show('commit-timeline');
         }
 
-    }
-    ,
-    created()
-    {
-//        this.searchRepo();
     }
     }
 </script>
