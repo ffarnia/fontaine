@@ -1,7 +1,6 @@
 package com.fontaine.service;
 
 import com.fontaine.model.Author;
-import com.fontaine.model.Commit;
 import com.fontaine.model.Contributor;
 import com.fontaine.model.SearchResponse;
 
