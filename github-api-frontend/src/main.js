@@ -12,7 +12,6 @@ import LightTimeline from 'vue-light-timeline';
 
 Vue.config.productionTip = false
 
-
 Vue.directive('b-modal', VBModal)
 Vue.use(LightTimeline);
 Vue.use(BootstrapVue);
