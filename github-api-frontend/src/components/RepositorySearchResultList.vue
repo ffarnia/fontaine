@@ -15,21 +15,21 @@
         </span>
         </div>
         <div>
-            <CommittersModal :committersData="committersData"/>
-            <CommitNubmersModal :commitNumbers="commitNumbers"  :commitOptions="commitOptions" :pieData="pieData"/>
+            <CommittersModal :committersUrl="committersUrl" @hidden/>
+            <CommitNubmersModal :pieData="pieData"/>
             <CommitTimelineModal  :timelineData="timelineData"/>
 
             <b-table striped hover :items="repositories" :fields="fields" caption-top>
                 <template v-slot:table-caption>Total count of search result: {{total_repo}}</template>
 
                 <template v-slot:cell(show_details)="row">
-                    <b-button @click="onClick(row.item.contributors_url)">
+                    <b-button @click="openCommittersModal(row.item.contributors_url)">
                         Committers
                     </b-button>
-                        <b-button @click="getCommitNumbers(row.item.commits_url)">
+                        <b-button @click="openCommitNumbers(row.item.commits_url)">
                             Commit Numbers
                         </b-button>
-                    <b-button @click="commitTimeline(row.item.commits_url)">
+                    <b-button @click="openCommitTimeline(row.item.commits_url)">
                         Timeline
                     </b-button>
 
@@ -60,10 +60,8 @@
             total_repo: 0,
             search: {text:""},
             fields: ['id','full_name','description','show_details'],
-            committersData: [],
-            commitNumbers:[],
-            commitOptions:[],
             pieData: [],
+            committersUrl: '',
             timelineData: [{tag:'',content:''}]
         }
     }
@@ -71,29 +69,22 @@
     methods:{
         searchRepo()
         {
-
             RepositorySearchService.searchRepository(this.search.text).then(response=>
             {
                 this.repositories = response.data.items;
                 this.total_repo = response.data.total_count;
             }
-        )
-            ;
-        }
-    ,
-        onClick(url)
+        );
+        },
+        openCommittersModal(url)
         {
-            RepositorySearchService.committersList(url).then(response=>
-            {
-                this.committersData = response.data;
-            }
-        )
-            ;
+            this.committersUrl = url;
             this.$bvModal.show('committers');
         },
 
-        getCommitNumbers(url)
+        openCommitNumbers(url)
         {
+
             RepositorySearchService.numberOfCommits(url.replace("{/sha}","")).then(response=>
             {
                 var map = new Map();
@@ -104,12 +95,12 @@
                 pair.value = map[k];
                 this.pieData.push(pair);
             });
-            }
-        )
-            ;
+            });
+
             this.$bvModal.show('commit-numbers');
         },
-        commitTimeline(url)
+
+        openCommitTimeline(url)
         {
             RepositorySearchService.commitTimeline(url.replace("{/sha}","")).then(response=>
             {
@@ -120,13 +111,9 @@
                 timeObj.content = e.email;
                 this.timelineData.push(timeObj);
             });
-
-            }
-        )
-            ;
+            });
             this.$bvModal.show('commit-timeline');
         }
-
     }
     }
 </script>

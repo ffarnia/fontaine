@@ -1,6 +1,5 @@
 <template>
     <b-modal id="commit-numbers" size="xl" title="Impact of committers base on number of commits">
-
         <div>
             <v-chart :options="pie"
                      autoresize />
@@ -15,15 +14,15 @@
     export default {
         name: 'CommitNumbersModal',
         props: {
-            commitOptions: Array,
-            commitNumbers: Array,
             pieData: Array
         },
         components: {
 //            'v-chart': ECharts
         },
-        data () {
+        methods: {
 
+        },
+        data () {
         return {
             pie: {
                 title: {
