@@ -4,6 +4,7 @@ import com.fontaine.model.Author;
 import com.fontaine.model.CommitResponse;
 import com.fontaine.model.Contributor;
 import com.fontaine.model.SearchResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class SearchRepositoryServiceImpl implements SearchRepositoryService {
 
-    private String search_endpoint = "https://api.github.com/search/repositories";
+    @Value("${github.search.endpoint}")
+    private String search_endpoint;
 
     @Override
     public SearchResponse searchPublicRepo(String name) {
