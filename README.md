@@ -1,5 +1,5 @@
 # fontaine
-Search GitHub public repositories and list committers
+Using https://developer.github.com/v3/ document to search GitHub public repositories and list committers and their impact on timeline.
 
 This project is written with below tools and technologies:
 1. java8
